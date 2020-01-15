@@ -1,0 +1,8 @@
+name: the-environment
+channels:
+  - conda-forge
+dependencies:
+  - python
+  - numpy
+  - pandas
+  - matplotlib
