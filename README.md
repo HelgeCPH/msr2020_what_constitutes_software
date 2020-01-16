@@ -8,7 +8,7 @@ This repository contains the [dataset](https://github.com/doubleblinder/msr2020_
 
   - To view the data, the results, figures, and tables [>click here<](https://nbviewer.jupyter.org/github/doubleblinder/msr2020_what_is_software/blob/master/MSR%202020.ipynb)
   - To explore the dataset and to replicate the results, figures, and tables [>click here<](https://notebooks.azure.com/import/gh/doubleblinder/msr2020_what_is_software)
-  - Alternatively, as it seems as if neither AzureNB nor MyBinder seem to have RAM enough to load the dataset, clone this repository replicate the results, figures, and tables locally in the `MSR 2020.ipynb`
+  - Alternatively, as it seems as if neither AzureNB nor MyBinder have RAM enough to load the dataset, clone this repository replicate the results, figures, and tables locally in the `MSR 2020.ipynb`
 
 
 
