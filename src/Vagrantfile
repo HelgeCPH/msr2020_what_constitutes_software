@@ -1,0 +1,103 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = 'digital_ocean'
+  config.vm.box_url = "https://github.com/devopsgroup-io/vagrant-digitalocean/raw/master/box/digital_ocean.box"
+  config.ssh.private_key_path = '~/.ssh/id_rsa'
+  
+  config.vm.synced_folder ".", "/vagrant", type: "rsync"
+
+  config.vm.define "experimentserver", primary: true do |server|
+
+    server.vm.provider :digital_ocean do |provider|
+      provider.ssh_key_name = ENV["SSH_KEY_NAME"]
+      provider.token = ENV["DIGITAL_OCEAN_TOKEN"]
+      provider.image = 'ubuntu-18-04-x64'
+      provider.region = 'fra1'
+      # For testing the setup. 1GB is too small due to the size of the already 
+      # present data.
+      # provider.size = '1gb'
+      # For running the real experiment either 6 or 8 cores...
+      provider.size = '16gb'
+      provider.privatenetworking = true
+    end
+
+    server.vm.hostname = "experiment"
+    server.vm.provision "shell", inline: <<-SHELL
+    sudo apt-get update
+    sudo apt-get install -y unzip
+
+    echo "Installing Anaconda..."
+    sudo wget https://repo.anaconda.com/archive/Anaconda3-2019.07-Linux-x86_64.sh -O $HOME/Anaconda3-2019.07-Linux-x86_64.sh
+
+    bash ~/Anaconda3-2019.07-Linux-x86_64.sh -b
+    
+    echo ". $HOME/.bashrc" >> $HOME/.bash_profile
+    echo "export PATH=$HOME/anaconda3/bin:$PATH" >> $HOME/.bash_profile
+    export PATH="$HOME/anaconda3/bin:$PATH"
+    rm Anaconda3-2019.07-Linux-x86_64.sh
+    
+    # Install all dependencies
+    pip install PyGithub
+    conda install -y GitPython
+    sudo apt-get install libmagic-dev
+    pip install filemagic
+
+    sudo apt-get install -y openjdk-8-jre-headless
+    
+    # Add GH key to bashrc
+    echo "export export GITHUB_API_KEY="<your key comes here>"" >> $HOME/.bash_profile
+    source $HOME/.bash_profile
+
+    # Create necessary directories
+    mkdir -p $HOME/out/intermediate
+    mkdir -p $HOME/out/repos
+    mkdir -p $HOME/out/results
+    mkdir -p $HOME/out/logs
+
+    # Move files to where they are expected
+    cp /vagrant/*.py $HOME/
+    cp /vagrant/*.yml $HOME/
+
+    cp /vagrant/artifacts/repos_csvs.zip $HOME/out/
+    unzip $HOME/out/repos_csvs.zip -d $HOME/out/
+    rm $HOME/out/repos_csvs.zip
+
+    cp -r /vagrant/droid $HOME
+    cp -r /vagrant/.droid $HOME
+
+
+    # Just to have another text editor in case necessary
+    pip install suplemon
+    
+    (crontab -l && echo "*/20 * * * * /root/restart_hack.sh") | crontab -
+
+
+    # Start download
+    # nohup python $HOME/download_gh_repos.py > out/logs/download.log 2>&1 &
+    # Start analyzis with all cores
+    # nohup python analyze.py >> out/logs/results.log 2>&1 &
+
+    # cd /root/out/results/
+    # tar -caf results.tar.bz2 *.csv
+    # cd /root/out/intermediate/
+    # tar -caf intermediate.tar.bz2 *.csv
+
+    vagrant scp "experimentserver:/root/out/repos/allexperimentrepos.tar" ../out/remote_repos
+    /out/remote_repos/allexperimentrepos.tar
+
+    vagrant scp "experimentserver:/root/out/repos/*.zip" ../out/remote_repos
+
+
+    vagrant scp "experimentserver:/root/out/results/results.tar.bz2" ../out/remote_results/
+
+    echo "==================================================================="
+    echo "=                             DONE                                ="
+    echo "==================================================================="
+    echo "Machine: `hostname` has IP address: `ifconfig eth0 2>/dev/null|awk '/inet addr:/ {print $2}'|sed 's/addr://'`"
+    echo "To log onto the VM:"
+    echo "$ vagrant ssh"
+    SHELL
+  end
+end
