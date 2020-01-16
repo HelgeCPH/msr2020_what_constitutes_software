@@ -7,12 +7,11 @@ This repository contains the [dataset](https://github.com/doubleblinder/msr2020_
 
 
   - To view the data, the results, figures, and tables [>click here<](https://nbviewer.jupyter.org/github/doubleblinder/msr2020_what_is_software/blob/master/MSR%202020.ipynb)
-  - To explore the dataset and to replicate the results, figures, and tables [>click here<](https://notebooks.azure.com/import/gh/doubleblinder/msr2020_what_is_software)
-  - Alternatively, as it seems as if neither AzureNB nor MyBinder have RAM enough to load the dataset, clone this repository replicate the results, figures, and tables locally in the `MSR 2020.ipynb`
+  - As it seems as if neither AzureNB nor MyBinder have enough RAM to load the dataset, clone this repository replicate the results, figures, and tables locally in the `MSR 2020.ipynb`
 
 
 
-This repository is only active during the double blind review phase. On publication of the paper this repository with data and figures will be published via Zenodo.
+This repository is only active during the double blind review phase. On publication of the paper, this repository with data and figures will be published via Zenodo.
 
 
 Note, running the notebook on Azure you need a Microsoft login.
