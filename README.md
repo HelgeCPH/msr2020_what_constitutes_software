@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3701425.svg)](https://doi.org/10.5281/zenodo.3701425)
+
 [![AzureNB](https://notebooks.azure.com/launch.png)](https://notebooks.azure.com/import/gh/HelgeCPH/msr2020_what_constitutes_software) [![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/HelgeCPH/msr2020_what_constitutes_software/master)
 
 
